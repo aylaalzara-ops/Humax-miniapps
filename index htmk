@@ -1,0 +1,128 @@
+// HUMAX Mini App Example
+// Structure: 
+// /frontend - React PWA
+// /contracts - Solidity token + claim
+// /backend - Node.js API stub
+
+/* ---------- /contracts/HumaxToken.sol ---------- */
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract HumaxToken is ERC20 {
+    constructor(uint256 initialSupply) ERC20("HUMAX", "HMX") {
+        _mint(msg.sender, initialSupply);
+    }
+}
+
+/* ---------- /contracts/HumaxClaim.sol ---------- */
+pragma solidity ^0.8.19;
+
+import "./HumaxToken.sol";
+
+contract HumaxClaim {
+    HumaxToken public token;
+    mapping(bytes32 => bool) public usedProof;
+    mapping(address => bool) public hasClaimed;
+
+    constructor(address tokenAddress) {
+        token = HumaxToken(tokenAddress);
+    }
+
+    function claim(bytes32 proofHash, uint256 amount) external {
+        require(!usedProof[proofHash], "Proof already used");
+        require(!hasClaimed[msg.sender], "Already claimed");
+
+        usedProof[proofHash] = true;
+        hasClaimed[msg.sender] = true;
+        token.transfer(msg.sender, amount);
+    }
+}
+
+/* ---------- /frontend/src/App.js ---------- */
+import React, { useState } from 'react';
+import { ethers } from 'ethers';
+import HumaxTokenABI from './HumaxTokenABI.json';
+import HumaxClaimABI from './HumaxClaimABI.json';
+
+const TOKEN_ADDRESS = '0xYourTokenAddressHere';
+const CLAIM_ADDRESS = '0xYourClaimContractAddressHere';
+
+function App() {
+  const [wallet, setWallet] = useState(null);
+  const [verified, setVerified] = useState(false);
+  const [claimed, setClaimed] = useState(false);
+
+  async function connectWallet() {
+    if (window.ethereum) {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      setWallet(accounts[0]);
+    }
+  }
+
+  async function verifyHuman() {
+    // Simulate World ID verification stub
+    setVerified(true);
+    alert('Verified as Human!');
+  }
+
+  async function claimHumax() {
+    if (!wallet || !verified) return alert('Connect wallet and verify first');
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const claimContract = new ethers.Contract(CLAIM_ADDRESS, HumaxClaimABI, signer);
+    
+    // Sample proof hash for stub (replace with real World ID hash)
+    const proofHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(wallet));
+
+    try {
+      const tx = await claimContract.claim(proofHash, ethers.utils.parseUnits('100', 18));
+      await tx.wait();
+      setClaimed(true);
+      alert('HUMAX claimed!');
+    } catch(e) {
+      console.error(e);
+      alert('Claim failed');
+    }
+  }
+
+  return (
+    <div style={{ padding: '2rem', fontFamily: 'sans-serif', background: '#000', color: '#0ff' }}>
+      <h1>HUMAX Mini App</h1>
+      <h3>One Human. One ID. One Future.</h3>
+
+      {!wallet && <button onClick={connectWallet}>Connect Wallet</button>}
+      {wallet && !verified && <button onClick={verifyHuman}>Verify Human</button>}
+      {wallet && verified && !claimed && <button onClick={claimHumax}>Claim HUMAX</button>}
+      {claimed && <p>✅ HUMAX claimed!</p>}
+    </div>
+  );
+}
+
+export default App;
+
+/* ---------- /frontend/src/index.js ---------- */
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+/* ---------- /frontend/package.json ---------- */
+{
+  "name": "humax-mini-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ethers": "^6.9.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  }
+}
