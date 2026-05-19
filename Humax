@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>HMX WORLD STAKING</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+body{
+background:#020617;
+font-family:sans-serif;
+overflow-x:hidden;
+}
+
+.glass{
+background:rgba(15,23,42,0.88);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,0.05);
+}
+
+.glow{
+box-shadow:0 0 40px rgba(0,255,200,0.08);
+}
+
+.gradient{
+background:linear-gradient(to right,#00f5d4,#00d9ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.card-hover{
+transition:0.3s;
+}
+
+.card-hover:hover{
+transform:translateY(-5px);
+box-shadow:0 0 50px rgba(0,255,255,0.15);
+}
+
+.animate{
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.03);}
+100%{transform:scale(1);}
+}
+
+.chart-line{
+animation:chart 3s ease forwards;
+stroke-dasharray:1000;
+stroke-dashoffset:1000;
+}
+
+@keyframes chart{
+to{
+stroke-dashoffset:0;
+}
+}
+
+</style>
+</head>
+
+<body class="text-white min-h-screen pb-40">
+
+<!-- HEADER -->
+
+<div class="sticky top-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/5">
+
+<div class="flex items-center justify-between p-4">
+
+<div class="flex items-center gap-3">
+
+<div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center glow">
+
+<div class="w-5 h-5 bg-cyan-400 rounded-full animate"></div>
+
+</div>
+
+<div>
+<h1 class="text-2xl font-bold">HMX STAKING</h1>
+<p class="text-slate-400 text-sm">Worldcoin Mini App</p>
+</div>
+
+</div>
+
+<div class="flex gap-2">
+
+<button class="bg-slate-800 px-4 py-2 rounded-xl text-sm">
+TVL
+</button>
+
+<button class="bg-cyan-500 text-black font-bold px-4 py-2 rounded-xl">
+LIVE
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- HERO -->
+
+<div class="p-5">
+
+<div class="glass rounded-3xl p-6 glow relative overflow-hidden">
+
+<div class="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 blur-3xl rounded-full"></div>
+
+<h2 class="text-4xl font-bold leading-tight">
+Stake HMX &
+<span class="gradient">Earn Daily</span>
+</h2>
+
+<p class="text-slate-400 mt-3">
+Decentralized staking protocol powered by Worldcoin ecosystem.
+</p>
+
+<div class="grid grid-cols-3 gap-3 mt-6">
+
+<div class="bg-black/30 rounded-2xl p-4 text-center">
+<p class="text-slate-400 text-sm">TVL</p>
+<h3 class="font-bold text-xl">$1.8M</h3>
+</div>
+
+<div class="bg-black/30 rounded-2xl p-4 text-center">
+<p class="text-slate-400 text-sm">Users</p>
+<h3 class="font-bold text-xl">24.5K</h3>
+</div>
+
+<div class="bg-black/30 rounded-2xl p-4 text-center">
+<p class="text-slate-400 text-sm">APY</p>
+<h3 class="font-bold text-xl text-cyan-400">18.5%</h3>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div class="px-5">
+
+<h2 class="text-2xl font-bold mb-4">
+Dashboard
+</h2>
+
+<div class="grid grid-cols-2 gap-4">
+
+<div class="glass rounded-3xl p-5 glow card-hover">
+<p class="text-slate-400 text-sm">
+TOTAL STAKED
+</p>
+
+<h3 id="stakeBalance" class="text-3xl font-bold mt-3">
+0 HMX
+</h3>
+</div>
+
+<div class="glass rounded-3xl p-5 glow card-hover">
+<p class="text-slate-400 text-sm">
+TOTAL REWARDS
+</p>
+
+<h3 id="rewardBalance" class="text-3xl font-bold mt-3 gradient">
+0 HMX
+</h3>
+</div>
+
+<div class="glass rounded-3xl p-5 glow card-hover">
+<p class="text-slate-400 text-sm">
+DAILY EARNINGS
+</p>
+
+<h3 id="dailyEarn" class="text-3xl font-bold mt-3 text-cyan-400">
+0.00
+</h3>
+</div>
+
+<div class="glass rounded-3xl p-5 glow card-hover">
+<p class="text-slate-400 text-sm">
+REFERRALS
+</p>
+
+<h3 id="refCount" class="text-3xl font-bold mt-3">
+0
+</h3>
+</div>
+
+</div>
+
+</div>
+
+<!-- LIVE CHART -->
+
+<div class="p-5">
+
+<div class="glass rounded-3xl p-6 glow">
+
+<div class="flex justify-between items-center mb-4">
+
+<div>
+<h2 class="text-2xl font-bold">
+Growth Analytics
+</h2>
+
+<p class="text-slate-400">
+Live staking activity
+</p>
+</div>
+
+<div class="bg-cyan-500/20 px-4 py-2 rounded-full text-cyan-300">
++12.8%
+</div>
+
+</div>
+
+<svg viewBox="0 0 300 120" class="w-full h-52">
+
+<path
+d="M0 100 C40 80, 60 60, 100 65 C130 68, 150 40, 180 35 C210 30, 240 15, 300 10"
+stroke="#00f5d4"
+stroke-width="4"
+fill="none"
+class="chart-line"
+/>
+
+</svg>
+
+</div>
+
+</div>
+
+<!-- STAKING POOLS -->
+
+<div class="px-5">
+
+<h2 class="text-2xl font-bold mb-5">
+Staking Pools
+</h2>
+
+<div class="space-y-5">
+
+<!-- CARD -->
+
+<div class="glass rounded-3xl p-6 glow card-hover">
+
+<div class="flex justify-between items-start">
+
+<div>
+
+<h2 class="text-3xl font-bold">
+30 Days
+</h2>
+
+<p class="text-5xl font-bold gradient mt-5">
+8.5%
+</p>
+
+<p class="text-slate-400 mt-3">
+Flexible low-risk pool
+</p>
+
+</div>
+
+<div class="bg-cyan-500/20 text-cyan-300 px-4 py-1 rounded-full">
+Popular
+</div>
+
+</div>
+
+<input
+id="stake30"
+type="number"
+placeholder="Enter HMX amount"
+class="w-full mt-6 bg-slate-900 border border-slate-700 rounded-2xl p-4 outline-none"
+/>
+
+<button
+onclick="stake('30',8.5)"
+class="w-full mt-5 bg-cyan-500 hover:bg-cyan-400 transition rounded-2xl py-4 text-black font-bold text-lg"
+>
+Stake Now
+</button>
+
+</div>
+
+<!-- CARD -->
+
+<div class="glass rounded-3xl p-6 glow card-hover">
+
+<div class="flex justify-between items-start">
+
+<div>
+
+<h2 class="text-3xl font-bold">
+90 Days
+</h2>
+
+<p class="text-5xl font-bold gradient mt-5">
+12.8%
+</p>
+
+<p class="text-slate-400 mt-3">
+Best value staking pool
+</p>
+
+</div>
+
+<div class="bg-cyan-500/20 text-cyan-300 px-4 py-1 rounded-full">
+Best Value
+</div>
+
+</div>
+
+<input
+id="stake90"
+type="number"
+placeholder="Enter HMX amount"
+class="w-full mt-6 bg-slate-900 border border-slate-700 rounded-2xl p-4 outline-none"
+/>
+
+<button
+onclick="stake('90',12.8)"
+class="w-full mt-5 bg-cyan-500 hover:bg-cyan-400 transition rounded-2xl py-4 text-black font-bold text-lg"
+>
+Stake Now
+</button>
+
+</div>
+
+<!-- CARD -->
+
+<div class="glass rounded-3xl p-6 glow card-hover">
+
+<div class="flex justify-between items-start">
+
+<div>
+
+<h2 class="text-3xl font-bold">
+180 Days
+</h2>
+
+<p class="text-5xl font-bold gradient mt-5">
+18.5%
+</p>
+
+<p class="text-slate-400 mt-3">
+Maximum yield pool
+</p>
+
+</div>
+
+<div class="bg-cyan-500/20 text-cyan-300 px-4 py-1 rounded-full">
+Max Yield
+</div>
+
+</div>
+
+<input
+id="stake180"
+type="number"
+placeholder="Enter HMX amount"
+class="w-full mt-6 bg-slate-900 border border-slate-700 rounded-2xl p-4 outline-none"
+/>
+
+<button
+onclick="stake('180',18.5)"
+class="w-full mt-5 bg-cyan-500 hover:bg-cyan-400 transition rounded-2xl py-4 text-black font-bold text-lg"
+>
+Stake Now
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- LEADERBOARD -->
+
+<div class="p-5">
+
+<div class="glass rounded-3xl p-6 glow">
+
+<div class="flex justify-between mb-5">
+
+<h2 class="text-2xl font-bold">
+Top Stakers
+</h2>
+
+<div class="text-cyan-400">
+LIVE
+</div>
+
+</div>
+
+<div class="space-y-4">
+
+<div class="flex justify-between bg-black/30 rounded-2xl p-4">
+<div>
+<p class="font-bold">0x8a...92F</p>
+<p class="text-slate-400 text-sm">Whale</p>
+</div>
+
+<div class="text-right">
+<p class="font-bold">250K HMX</p>
+<p class="text-cyan-400">+18%</p>
+</div>
+</div>
+
+<div class="flex justify-between bg-black/30 rounded-2xl p-4">
+<div>
+<p class="font-bold">0x7f...AA1</p>
+<p class="text-slate-400 text-sm">Legend</p>
+</div>
+
+<div class="text-right">
+<p class="font-bold">180K HMX</p>
+<p class="text-cyan-400">+14%</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- REFERRAL -->
+
+<div class="px-5">
+
+<div class="glass rounded-3xl p-6 glow">
+
+<h2 class="text-2xl font-bold">
+Referral Program
+</h2>
+
+<p class="text-slate-400 mt-2">
+Invite friends and earn bonus rewards.
+</p>
+
+<div class="bg-black/30 rounded-2xl p-4 mt-5 break-all">
+<span id="refLink">
+https://hmx.app/ref/928291
+</span>
+</div>
+
+<button
+onclick="copyRef()"
+class="w-full mt-5 bg-white text-black rounded-2xl py-4 font-bold"
+>
+Copy Referral Link
+</button>
+
+</div>
+
+</div>
+
+<!-- CLAIM -->
+
+<div class="p-5">
+
+<button
+onclick="claimRewards()"
+class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-3xl py-5 text-black text-2xl font-bold shadow-2xl animate"
+>
+CLAIM REWARDS
+</button>
+
+</div>
+
+<!-- BOTTOM NAV -->
+
+<div class="fixed bottom-0 left-0 right-0 glass border-t border-white/5">
+
+<div class="grid grid-cols-4 text-center py-4">
+
+<div>
+<p>🏠</p>
+<p class="text-sm mt-1">Home</p>
+</div>
+
+<div>
+<p>💰</p>
+<p class="text-sm mt-1">Stake</p>
+</div>
+
+<div>
+<p>📈</p>
+<p class="text-sm mt-1">Rewards</p>
+</div>
+
+<div>
+<p>⚙️</p>
+<p class="text-sm mt-1">Settings</p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let totalStake = 0;
+let totalRewards = 0;
+let referrals = 12;
+
+document.getElementById("refCount").innerText = referrals;
+
+function updateUI(){
+
+document.getElementById("stakeBalance").innerText =
+totalStake.toFixed(2) + " HMX";
+
+document.getElementById("rewardBalance").innerText =
+totalRewards.toFixed(2) + " HMX";
+
+document.getElementById("dailyEarn").innerText =
+(totalStake * 0.0015).toFixed(2);
+
+}
+
+function stake(days,apy){
+
+let input = document.getElementById("stake"+days);
+
+let amount = parseFloat(input.value);
+
+if(!amount || amount <= 0){
+
+alert("Enter valid amount");
+return;
+
+}
+
+totalStake += amount;
+
+let reward = amount * (apy / 100);
+
+totalRewards += reward;
+
+updateUI();
+
+alert(
+"Successfully staked " +
+amount +
+" HMX in " +
+days +
+" days pool."
+);
+
+input.value = "";
+
+}
+
+function claimRewards(){
+
+if(totalRewards <= 0){
+
+alert("No rewards available.");
+return;
+
+}
+
+alert(
+"Successfully claimed " +
+totalRewards.toFixed(2) +
+" HMX rewards!"
+);
+
+totalRewards = 0;
+
+updateUI();
+
+}
+
+function copyRef(){
+
+let text = document.getElementById("refLink").innerText;
+
+navigator.clipboard.writeText(text);
+
+alert("Referral link copied!");
+
+}
+
+updateUI();
+
+</script>
+
+</body>
+</html>
